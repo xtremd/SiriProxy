@@ -5,6 +5,8 @@
 #This is a domain that points to our current ip (Dynamic)
 domain=xtremd.no-ip.org
 
+webpage=/var/www/index.html
+
 #This script uses commands that must be used as root or someone with superuser privs
 #  Check if we are root
 if [[ $EUID -ne 0 ]]; then
@@ -20,6 +22,18 @@ dynamicIpAddress=$(host $domain | grep 'has add' | head -1 | awk '{ print $4}')
 
 #print out a debug message
 echo "Our IP address is: $dynamicIpAddress"
+
+#Ok, so we know our ip address. Let's share it with our user by posting it to a webpage on the server.
+rm $webpage
+
+echo "Constructing webpage"
+
+echo "<html>" >> $webpage
+echo "<h1>" >> $webpage
+echo "Hello! Your SiriProxy can be found at IP address $dynamicIpAddress . Enjoy bossing Siri around!" >> $webpage
+echo "</h1>" >> $webpage
+echo "</html>" >> $webpage
+
 
 #Set our dnsmasq resolve file to the correct ip address
 echo "Restarting dnsmasq with our newly aquired IP address for the guzzoni.apple.com url"
