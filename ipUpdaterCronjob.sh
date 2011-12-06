@@ -5,6 +5,7 @@
 #This is a domain that points to our current ip (Dynamic)
 domain=xtremd.no-ip.org
 
+#This points to where we want our HTML webage to be generated
 webpage=/var/www/index.html
 
 #This script uses commands that must be used as root or someone with superuser privs
@@ -26,12 +27,15 @@ echo "Our IP address is: $dynamicIpAddress"
 #Ok, so we know our ip address. Let's share it with our user by posting it to a webpage on the server.
 rm $webpage
 
-echo "Constructing webpage"
+timestamp=$(date)
+
+echo "Constructing webpage with timestamp $timestamp."
 
 echo "<html>" >> $webpage
 echo "<h1>" >> $webpage
 echo "Hello! Your SiriProxy can be found at IP address $dynamicIpAddress . Enjoy bossing Siri around!" >> $webpage
 echo "</h1>" >> $webpage
+echo "<p> Webpage last updated at: $timestamp </p>" >> $webpage
 echo "</html>" >> $webpage
 
 
