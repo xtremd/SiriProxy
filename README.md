@@ -85,7 +85,7 @@ Clone this repo locally, then navigate into the SiriProxy directory (the root of
 	`siriproxy bundle`
 8. Start SiriProxy (must start as root because it uses a port < 1024):  
 	`rvmsudo siriproxy server`
-9. Test that the server is running by saying "Text Siri Proxy" to your phone.
+9. Test that the server is running by saying "Test Siri Proxy" to your phone.
 
 Note: on some machines, rvmsudo changes "`~`" to "`/root/`". This means that you may need to symlink your "`.siriproxy`" directory to "`/root/`" in order to get the application to work:  
 
@@ -114,6 +114,10 @@ FAQ
 **Will this let me run Siri on my iPhone 4, iPod Touch, iPhone 3G, Microwave, etc?**
 
 No. Please stop asking. 
+
+**What is your opinion on h1siri, public SiriProxy servers, and other Siri "ports"?**
+
+Glad you asked! Watch this: [http://youtu.be/Y_Q6PfxBSbA](http://youtu.be/Y_Q6PfxBSbA)
 
 **How do I generate the certificate?**
 
