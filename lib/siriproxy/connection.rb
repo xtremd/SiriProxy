@@ -21,69 +21,69 @@ class SiriProxy::Connection < EventMachine::Connection
     self.unzip_stream = Zlib::Inflate.new
     self.zip_stream = Zlib::Deflate.new
     self.consumed_ace = false
-		@auth_data = nil
-		@faux = false
-	end
+    @auth_data = nil
+    @faux = false
+  end
 
   def post_init
     self.ssled = false
   end
 
-	def encode_data(x)
-		x = [x].pack("H*")
-		x.blob = true
-		x
-	end
+  def encode_data(x)
+    x = [x].pack("H*")
+    x.blob = true
+    x
+  end
 
-	def read_relative_file(x)
-		val = nil
-		begin
-			val = File.open(File.expand_path(x), "r").read
-		rescue SystemCallError
-		end
+  def read_relative_file(x)
+    val = nil
+    begin
+      val = File.open(File.expand_path(x), "r").read
+    rescue SystemCallError
+    end
 
-		val
-	end
+    val
+  end
 
-	def write_relative_file(x, val)
-		File.open(File.expand_file(x), "w") do |f|
-			file.write(val)
-		end
-	end
+  def write_relative_file(x, val)
+    File.open(File.expand_file(x), "w") do |f|
+      file.write(val)
+    end
+  end
 
-	def read_auth_data
-		map = Hash.new
+  def read_auth_data
+    map = Hash.new
 
-		map["speech_id"] = read_relative_file("~/.siriproxy/speech_id")
-		map["assistant_id"] = read_relative_file("~/.siriproxy/assistant_id")
-		map["session_data"] = read_relative_file("~/.siriproxy/session_data")
+    map["speech_id"] = read_relative_file("~/.siriproxy/speech_id")
+    map["assistant_id"] = read_relative_file("~/.siriproxy/assistant_id")
+    map["session_data"] = read_relative_file("~/.siriproxy/session_data")
 
-		puts map
-		map
-	end
+    puts map
+    map
+  end
 
   def ssl_handshake_completed
     self.ssled = true
 
-		@auth_data = read_auth_data()
+    @auth_data = read_auth_data()
     puts "[Info - #{self.name}] SSL completed for #{self.name}" if $LOG_LEVEL > 1
-	end
+  end
 
-	def receive_line(line) #Process header
-		puts "[Header - #{self.name}] #{line}" if $LOG_LEVEL > 2
+  def receive_line(line) #Process header
+    puts "[Header - #{self.name}] #{line}" if $LOG_LEVEL > 2
     if(line == "") #empty line indicates end of headers
       puts "[Debug - #{self.name}] Found end of headers" if $LOG_LEVEL > 3
       set_binary_mode
       self.processed_headers = true
     elsif line.match(/^User-Agent:/)
-			if line.match(/iPhone4,1/)
-				puts "[Warning] 4S device connected. Keys will be saved."
-				@faux = false
-			else
-				puts "[Warning] Non-4S device connected."
-				@faux = true
-			end
-		end
+      if line.match(/iPhone4,1/)
+        puts "[Warning] 4S device connected. Keys will be saved."
+        @faux = false
+      else
+        puts "[Warning] Non-4S device connected."
+        @faux = true
+      end
+    end
     self.output_buffer << (line + "\x0d\x0a") #Restore the CR-LF to the end of the line
 
     flush_output_buffer()
@@ -217,54 +217,54 @@ class SiriProxy::Connection < EventMachine::Connection
       return nil
     end
 
-		if object["properties"] != nil
-			if object["properties"]["sessionValidationData"] != nil
-				if @faux == false
-					# We're on a 4S
-					data = object["properties"]["sessionValidationData"].unpack('H*').join("")
-					write_relative_file("~/.siriproxy/session_data", data)
-				else
-					if @auth_data == nil
-						puts "[Error] No session data available."
-					else
-						puts "[Info] Found cached session data."
-						object["properties"]["sessionValidationData"] = encode_data(@auth_data["session_data"])
-					end
-				end
-			end
+    if object["properties"] != nil
+      if object["properties"]["sessionValidationData"] != nil
+        if @faux == false
+          # We're on a 4S
+          data = object["properties"]["sessionValidationData"].unpack('H*').join("")
+          write_relative_file("~/.siriproxy/session_data", data)
+        else
+          if @auth_data == nil
+            puts "[Error] No session data available."
+          else
+            puts "[Info] Found cached session data."
+            object["properties"]["sessionValidationData"] = encode_data(@auth_data["session_data"])
+          end
+        end
+      end
 
-			if object["properties"]["speechId"] != nil
-				if @faux == false
-					# We're on a 4S
-					data = object["properties"]["speechId"]
-					write_relative_file("~/.siriproxy/speech_id", data)
-				else
-					if @auth_data == nil
-						puts "[Error] No speech id available."
-					else
-						puts "[Info] Found cached speech id."
-						object["properties"]["speechId"] = @auth_data["speech_id"]
-					end
-				end
-			end
+      if object["properties"]["speechId"] != nil
+        if @faux == false
+          # We're on a 4S
+          data = object["properties"]["speechId"]
+          write_relative_file("~/.siriproxy/speech_id", data)
+        else
+          if @auth_data == nil
+            puts "[Error] No speech id available."
+          else
+            puts "[Info] Found cached speech id."
+            object["properties"]["speechId"] = @auth_data["speech_id"]
+          end
+        end
+      end
 
-			if object["properties"]["assistantId"] != nil
-				if @faux == false
-					# We're on a 4S
-					data = object["properties"]["assistantId"]
-					write_relative_file("~/.siriproxy/assistant_id", data)
-				else
-					if @auth_data == nil
-						puts "[Error] No assistant id available."
-					else
-						puts "[Info] Found cached assistant id."
-						object["properties"]["assistantId"] = @auth_data["assistant_id"]
-					end
-				end
-			end
-		end
+      if object["properties"]["assistantId"] != nil
+        if @faux == false
+          # We're on a 4S
+          data = object["properties"]["assistantId"]
+          write_relative_file("~/.siriproxy/assistant_id", data)
+        else
+          if @auth_data == nil
+            puts "[Error] No assistant id available."
+          else
+            puts "[Info] Found cached assistant id."
+            object["properties"]["assistantId"] = @auth_data["assistant_id"]
+          end
+        end
+      end
+    end
 
-		puts "[Info - #{self.name}] Received Object: #{object["class"]}" if $LOG_LEVEL == 1
+    puts "[Info - #{self.name}] Received Object: #{object["class"]}" if $LOG_LEVEL == 1
     puts "[Info - #{self.name}] Received Object: #{object["class"]} (group: #{object["group"]})" if $LOG_LEVEL == 2
     puts "[Info - #{self.name}] Received Object: #{object["class"]} (group: #{object["group"]}, ref_id: #{object["refId"]}, ace_id: #{object["aceId"]})" if $LOG_LEVEL > 2
     pp object if $LOG_LEVEL > 3
