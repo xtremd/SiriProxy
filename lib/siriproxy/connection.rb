@@ -47,7 +47,7 @@ class SiriProxy::Connection < EventMachine::Connection
 
   def write_relative_file(x, val)
     File.open(File.expand_path(x), "w") do |f|
-      file.write(val)
+      f.write(val)
     end
   end
 
