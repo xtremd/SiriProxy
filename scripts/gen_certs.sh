@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -o verbose #echo on
+
 commonName=$2
 
 if [ "${commonName}" == "" ]
@@ -38,7 +40,7 @@ echo "${localityName}" >> $TMP_DIR/ca.args
 echo "${organizationName}" >> $TMP_DIR/ca.args
 echo "${organizationalUnitName}" >> $TMP_DIR/ca.args
 echo "${commonName}" >> $TMP_DIR/ca.args
-#echo "${commonName}" >> $TMP_DIR/ca.args
+echo "${commonName}" >> $TMP_DIR/ca.args #Alternate name (Whatever)
 echo "${emailAddress}" >> $TMP_DIR/ca.args
 echo "" >> $TMP_DIR/ca.args
 echo "" >> $TMP_DIR/ca.args
@@ -56,7 +58,7 @@ echo "${localityName}" >> $TMP_DIR/ca.args
 echo "${organizationName}" >> $TMP_DIR/ca.args
 echo "${organizationalUnitName}" >> $TMP_DIR/ca.args
 echo "guzzoni.apple.com" >> $TMP_DIR/ca.args
-echo "xtremd.no-ip.org" >> $TMP_DIR/ca.args
+echo "xtremd.no-ip.org" >> $TMP_DIR/ca.args #The name of your domain
 echo "${emailAddress}" >> $TMP_DIR/ca.args
 echo "" >> $TMP_DIR/ca.args
 echo "" >> $TMP_DIR/ca.args
