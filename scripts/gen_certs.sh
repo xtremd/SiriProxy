@@ -38,6 +38,7 @@ echo "${localityName}" >> $TMP_DIR/ca.args
 echo "${organizationName}" >> $TMP_DIR/ca.args
 echo "${organizationalUnitName}" >> $TMP_DIR/ca.args
 echo "${commonName}" >> $TMP_DIR/ca.args
+#echo "${commonName}" >> $TMP_DIR/ca.args
 echo "${emailAddress}" >> $TMP_DIR/ca.args
 echo "" >> $TMP_DIR/ca.args
 echo "" >> $TMP_DIR/ca.args
@@ -55,9 +56,11 @@ echo "${localityName}" >> $TMP_DIR/ca.args
 echo "${organizationName}" >> $TMP_DIR/ca.args
 echo "${organizationalUnitName}" >> $TMP_DIR/ca.args
 echo "guzzoni.apple.com" >> $TMP_DIR/ca.args
+echo "xtremd.no-ip.org" >> $TMP_DIR/ca.args
 echo "${emailAddress}" >> $TMP_DIR/ca.args
 echo "" >> $TMP_DIR/ca.args
 echo "" >> $TMP_DIR/ca.args
+
 cat $TMP_DIR/ca.args | openssl req -new -keyout $TMP_DIR/newkey.pem -config $SIRI_PROXY_ROOT/scripts/openssl.cnf -out $TMP_DIR/newreq.pem -days 1095 -passin pass:1234 -passout pass:1234 >> $LOG_FILE 2>> $LOG_FILE
 
 echo "Generating guzzoni.apple.com certificate"
